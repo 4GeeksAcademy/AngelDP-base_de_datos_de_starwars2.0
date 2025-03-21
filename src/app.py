@@ -118,9 +118,9 @@ def create_user():
         lastname=data.get('lastname', '')
     )
 
-    db.session.add(new_user)
-
+    
     try:
+        db.session.add(new_user)
         db.session.commit()
         return jsonify(new_user.serialize_user()), 201
     except Exception as e:
@@ -423,9 +423,10 @@ def add_planet_favorite(user_id, planet_id):
         return jsonify({'msg': 'this planet is already in favorites'}), 200
 
     new_fav = PlanetFavorite(user_id=user_id, planet_id=planet_id)
-    db.session.add(new_fav)
+    
 
     try:
+        db.session.add(new_fav)
         db.session.commit()
         return jsonify(new_fav.serialize_favorite()), 201
     except Exception as e:
@@ -441,9 +442,10 @@ def delete_planet_favorite(user_id, planet_id):
     if not favorite:
         return jsonify({"Error": "favorite not found"}), 404
 
-    db.session.delete(favorite)
+    
 
     try:
+        db.session.delete(favorite)
         db.session.commit()
         return jsonify({"msg": "successfully deleted"}), 200
     except Exception as e:
@@ -469,9 +471,10 @@ def add_specie_favorite(user_id, specie_id):
         return jsonify({"msg": "this specie is already in favorites"})
 
     new_fav = SpecieFavorite(user_id=user_id, specie_id=specie_id)
-    db.session.add(new_fav)
+    
 
     try:
+        db.session.add(new_fav)
         db.session.commit()
         return jsonify(new_fav.serialize_favorite()), 201
     except Exception as e:
@@ -487,9 +490,10 @@ def delete_specie_favorite(user_id, specie_id):
     if not favorite:
         return jsonify({"Error": "favorite not found"}), 404
 
-    db.session.delete(favorite)
+    
 
     try:
+        db.session.delete(favorite)
         db.session.commit()
         return jsonify({"msg": "successfully deleted"})
     except Exception as e:
@@ -515,9 +519,10 @@ def add_vehicle_favorite(user_id, vehicle_id):
         return jsonify({"msg": "this vehicle is already in favorites"}), 200
 
     new_fav = VehicleFavorite(user_id=user_id, vehicle_id=vehicle_id)
-    db.session.add(new_fav)
+    
 
     try:
+        db.session.add(new_fav)
         db.session.commit()
         return jsonify(new_fav.serialize_favorite()), 201
     except Exception as e:
@@ -533,9 +538,10 @@ def delete_vehicle_favorite(user_id, vehicle_id):
     if not favorite:
         return jsonify({"Error": "favorite not found"}), 404
 
-    db.session.delete(favorite)
+    
 
     try:
+        db.session.delete(favorite)
         db.session.commit()
         return jsonify({"msg": "successfully deleted"}), 200
     except Exception as e:
@@ -561,9 +567,10 @@ def add_starship_favorite(user_id, starship_id):
         return jsonify({"msg": "this starship is already in favorites"}), 200
 
     new_fav = StarshipFavorite(user_id=user_id, starship_id=starship_id)
-    db.session.add(new_fav)
+    
 
     try:
+        db.session.add(new_fav)
         db.session.commit()
         return jsonify(new_fav.serialize_favorite()), 201
     except Exception as e:
@@ -579,9 +586,10 @@ def delete_starship_favorite(user_id, starship_id):
     if not favorite:
         return jsonify({"Error": "favorite not found"}), 404
 
-    db.session.delete(favorite)
+    
 
     try:
+        db.session.delete(favorite)
         db.session.commit()
         return jsonify({"msg": "successfully deleted"}), 200
     except Exception as e:
@@ -607,9 +615,10 @@ def add_person_favorite(user_id, person_id):
         return jsonify({"msg": "this person is already in favorites"}), 200
 
     new_fav = PersonFavorite(user_id=user_id, person_id=person_id)
-    db.session.add(new_fav)
+    
 
     try:
+        db.session.add(new_fav)
         db.session.commit()
         return jsonify(new_fav.serialize_favorite()), 201
     except Exception as e:
@@ -625,9 +634,9 @@ def delete_person_favorite(user_id, person_id):
     if not favorite:
         return jsonify({"Error": "favorite not found"}), 404
 
-    db.session.delete(favorite)
-
+    
     try:
+        db.session.delete(favorite)
         db.session.commit()
         return jsonify({"msg": "successfully deleted"}), 200
     except Exception as e:
