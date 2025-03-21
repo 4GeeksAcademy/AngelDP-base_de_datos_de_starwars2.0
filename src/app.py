@@ -388,6 +388,7 @@ def create_person():
         db.session.commit()
         return jsonify(new_person.serialize_person()), 201
     except Exception as e:
+        db.session.rollback()
         return jsonify({"Error": str(e)}), 500
 
 
