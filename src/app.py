@@ -230,7 +230,7 @@ def create_specie():
     try:
         db.session.add(new_specie)
         db.session.commit()
-        return jsonify(new_specie.serialize_specie), 201
+        return jsonify(new_specie.serialize_specie()), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({"Error": str(e)}), 500
@@ -282,7 +282,7 @@ def create_vehicle():
     try:
         db.session.add(new_vehicle)
         db.session.commit()
-        return jsonify(new_vehicle.serialize_vehicle), 201
+        return jsonify(new_vehicle.serialize_vehicle()), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({"Error": str(e)}), 500
@@ -335,7 +335,7 @@ def create_starship():
     try:
         db.session.add(new_starship)
         db.session.commit()
-        return jsonify(new_starship.serialize_starship), 201
+        return jsonify(new_starship.serialize_starship()), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({"Error": str(e)}), 500
@@ -386,7 +386,7 @@ def create_person():
     try: 
         db.session.add(new_person)
         db.session.commit()
-        return jsonify(new_person.serialize_person), 201
+        return jsonify(new_person.serialize_person()), 201
     except Exception as e:
         return jsonify({"Error": str(e)}), 500
 
