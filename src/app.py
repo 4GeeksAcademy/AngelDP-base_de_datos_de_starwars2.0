@@ -45,11 +45,16 @@ def get_all_user_favorites(user_id):
         user_id=user_id).all()
     person_favorites = PersonFavorite.query.filter_by(user_id=user_id).all()
 
-    serialized_planet_favorites = [fav.serialize_favorite() for fav in planet_favorites]
-    serialized_specie_favorites = [fav.serialize_favorite() for fav in specie_favorites]
-    serialized_vehicle_favorites = [fav.serialize_favorite() for fav in vehicle_favorites]
-    serialized_starship_favorites = [fav.serialize_favorite() for fav in starship_favorites]
-    serialized_person_favorites = [fav.serialize_favorite() for fav in person_favorites]
+    serialized_planet_favorites = [
+        fav.serialize_favorite() for fav in planet_favorites]
+    serialized_specie_favorites = [
+        fav.serialize_favorite() for fav in specie_favorites]
+    serialized_vehicle_favorites = [
+        fav.serialize_favorite() for fav in vehicle_favorites]
+    serialized_starship_favorites = [
+        fav.serialize_favorite() for fav in starship_favorites]
+    serialized_person_favorites = [
+        fav.serialize_favorite() for fav in person_favorites]
 
     favorites_by_type = {
         "planets": serialized_planet_favorites,
@@ -64,7 +69,7 @@ def get_all_user_favorites(user_id):
     }
 
 
-# -----------------------------------ENDPOINTS FOR USERS-----------------------------------#
+# -----------------------------------ENDPOINTS FOR USERS----------------------------------- #
 
 @app.route('/users', methods=['GET'])
 def get_users():
@@ -123,7 +128,7 @@ def create_user():
         return jsonify({"Error": str(e)}), 500
 
 
-# -----------------------------------ENDPOINTS FOR STARWARS OBJECTS-----------------------------------#
+# -----------------------------------ENDPOINTS FOR STARWARS OBJECTS----------------------------------- #
 
 # planets
 @app.route('/planets', methods=['GET'])
@@ -142,6 +147,40 @@ def get_planet(planet_id):
         return jsonify({"Error": "planet not found"}), 404
 
     return jsonify(planet.serialize_planet())
+
+
+@app.route('/planets', methods=['POST'])
+def create_planet():
+
+    data = request.get_json()
+    if not data:
+        return jsonify({"Error": "data not found"}), 400
+
+    required_fields = ['name']
+    for field in required_fields:
+        if field not in data:
+            return jsonify({"Error": f"the field '{field}' is required"}), 400
+
+    existing_name = Planet.query.filter_by(name=data['name']).first()
+    if existing_name:
+        return jsonify({"Error": "the planet is already in planets"}), 400
+
+    new_planet = Planet(
+        name=data['name'],
+        diameter=data['diameter'],
+        gravity=data['gravity'],
+        population=data['population'],
+        terrain=data['terrain'],
+        climate=data['climate']
+    )
+
+    try:
+        db.session.add(new_planet)
+        db.session.commit()
+        return jsonify(new_planet.serialize_planet()), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"Error": str(e)}), 500
 
 
 # species
@@ -163,6 +202,40 @@ def get_specie(specie_id):
     return jsonify(specie.serialize_specie()), 200
 
 
+@app.route('/species', methods=['POST'])
+def create_specie():
+
+    data = request.get_json()
+    if not data:
+        return jsonify({"Error": "data not found"}), 400
+
+    request_field = ['name']
+    for field in request_field:
+        if not field in data:
+            return jsonify({"Error": f"the field {field} is required"}), 400
+
+    existing_name = Specie.query.filter_by(name=data['name']).first()
+    if existing_name:
+        return jsonify({"Error": "the specie is already in species"})
+
+    new_specie = Specie(
+        name=data['name'],
+        hair_color=data['hair_color'],
+        height=data['height'],
+        skin_color=data['skin_color'],
+        language=data['language'],
+        average_life=data['average_life']
+    )
+
+    try:
+        db.session.add(new_specie)
+        db.session.commit()
+        return jsonify(new_specie.serialize_specie), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"Error": str(e)}), 500
+        
+
 # vehicles
 @app.route('/vehicles', methods=['GET'])
 def get_vehicles():
@@ -181,13 +254,47 @@ def get_vehicle(vehicle_id):
 
     return jsonify(vehicle.serialize_vehicle()), 200
 
+@app.route('/vehicles', methods=['POST'])
+def create_vehicle():
+
+    data = request.get_json()
+    if not data:
+        return jsonify({"Error": "data not found"}), 400
+
+    request_field = ['name']
+    for field in request_field:
+        if not field in data:
+            return jsonify({"Error": f"the field {field} is required"}), 400
+
+    existing_name = Vehicle.query.filter_by(name=data['name']).first()
+    if existing_name:
+        return jsonify({"Error": "the vehicle is already in vehicles"})
+
+    new_vehicle = Vehicle(
+        name=data['name'],
+        crew=data['crew'],
+        passengers=data['passengers'],
+        class_name=data['class_name'],
+        cargo_cap=data['cargo_cap'],
+        terrain=data['terrain']
+    )
+
+    try:
+        db.session.add(new_vehicle)
+        db.session.commit()
+        return jsonify(new_vehicle.serialize_vehicle), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"Error": str(e)}), 500
+    
 
 # starships
 @app.route('/starships', methods=['GET'])
 def get_starships():
 
     starships = Starship.query.all()
-    serialized_starships = [starship.serialize_starship() for starship in starships]
+    serialized_starships = [starship.serialize_starship()
+                            for starship in starships]
     return jsonify(serialized_starships), 200
 
 
@@ -199,6 +306,39 @@ def get_starship(starship_id):
         return jsonify({"Error": "starship nor found"}), 404
 
     return jsonify(starship.serialize_starship()), 200
+
+@app.route('/starships', methods=['POST'])
+def create_starship():
+
+    data = request.get_json()
+    if not data:
+        return jsonify({"Error": "data not found"}), 400
+
+    request_field = ['name']
+    for field in request_field:
+        if not field in data:
+            return jsonify({"Error": f"the field {field} is required"}), 400
+
+    existing_name = Starship.query.filter_by(name=data['name']).first()
+    if existing_name:
+        return jsonify({"Error": "the starship is already in starships"})
+
+    new_starship = Starship(
+        name=data['name'],
+        crew=data['crew'],
+        passengers=data['passengers'],
+        class_name=data['class_name'],
+        cargo_cap=data['cargo_cap'],
+        terrain=data['terrain']
+    )
+
+    try:
+        db.session.add(new_starship)
+        db.session.commit()
+        return jsonify(new_starship.serialize_starship), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"Error": str(e)}), 500
 
 
 # people
@@ -219,8 +359,39 @@ def get_person(person_id):
 
     return jsonify(person.serialize_person()), 200
 
+@app.route('/people', methods=['POST'])
+def create_person():
 
-# -----------------------------------ENDPOINTS FOR FAVS-----------------------------------
+    data = request.get_json()
+    if not data:
+        return jsonify({"Error": "data not found"}), 400
+
+    request_field = ['name']
+    for field in request_field:
+        if not field in data:
+            return jsonify({"Error": f"the field {field} is required"}), 400
+
+    existing_name = Person.query.filter_by(name=data['name']).first()
+    if existing_name:
+        return jsonify({"Error": "the person is already in people"})
+
+    new_person = Person(
+        name=data['name'],
+        hair_color=data['hair_color'],
+        height=data['height'],
+        eye_color=data['eye_color'],
+        gender=data['gender']
+    )
+
+    try: 
+        db.session.add(new_person)
+        db.session.commit()
+        return jsonify(new_person.serialize_person), 201
+    except Exception as e:
+        return jsonify({"Error": str(e)}), 500
+
+
+# -----------------------------------ENDPOINTS FOR FAVS----------------------------------- #
 
 @app.route('/users/<int:user_id>/favorites', methods=['GET'])
 def get_user_favorites(user_id):
